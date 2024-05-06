@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SS Wash Auto Devis</title>
+
+  <style>
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgba(235, 56, 56, 0.5);
+ 
+}
+
+.main {
+  padding: 0 8%;
+}
+
+header {
+  
+  color: #fff;
+  padding: 24px 0;
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.logo h3 {
+  width: 150px;
+  font-size: 30px;
+  cursor: pointer;
+  color: yellow;
+}
+
+.nav-links {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-links a {
+  margin-left: 30px;
+  text-decoration: none;
+  color: #fff;
+}
+
+.nav-links a:hover {
+  padding: 11px;
+  background: #000;
+  transition: 2s;
+}
+
+.nav-links .btn {
+  background: yellow;
+  color: #000;
+  padding: 10px 28px;
+  border-radius: 5px;
+}
+
+/*Entete*/
+
+.logo img {
+  max-height: 50px;
+  background-color: transparent;
+  max-height: 50px;
+  clip-path: circle(50%);
+  border: 2px solid yellow;
+}
+
+.logo a img {
+  max-height: 50px;
+  border: 2px solid yellow;
+  transition: transform 0.3s;
+}
+
+.logo a:hover img {
+  transform: rotate(20deg);
+}
+
+/* Nouveaux styles pour le formulaire*/
+form {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+form h2 {
+  color: #333;
+}
+
+form p {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+select,
+input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+}
+
+#productOptions,
+#serviceOptions {
+  display: none;
+}
+
+button {
+  background: #333;
+  color: #fff;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+
+<body>
+
+  <form id="devisForm">
+    <h2>SS Wash Auto Devis</h2>
+    <p><strong>Adresse:</strong> Rue Henry Becquerelle, imm Patio Jarry 97122</p>
+    <p><strong>Téléphone:</strong> 0690 80 23 79</p>
+    <p><strong>E-mail:</strong> info@sswashauto.com</p>
+
+    <label for="firstName">Prénom:</label>
+    <input type="text" id="firstName" required>
+
+    <label for="lastName">Nom:</label>
+    <input type="text" id="lastName" required>
+
+    <label for="address">Adresse:</label>
+    <input type="text" id="address" required>
+
+    <label for="phone">Téléphone:</label>
+    <input type="tel" id="phone" required>
+
+    <label for="email">Mail:</label>
+    <input type="email" id="email" required>
+
+    <label for="productOrService">Produit ou Prestation:</label>
+    <select id="productOrService" onchange="showOptions()">
+      <option value="product">Produit</option>
+      <option value="service">Prestation</option>
+    </select>
+
+    <div id="productOptions">
+      <label for="product">Produit:</label>
+      <select id="product">
+        <option value="Coffret lavage normal" prix="12">Coffret lavage normal</option>
+        <option value="Coffret lavage premium" prix="21">Coffret lavage premium</option>
+        <option value="Coffret lavage exclusif" prix="35">Coffret lavage exclusif</option>
+        <option value="Bouteille de savon ultra moussant" prix="7">Bouteille de savon ultra moussant</option>
+        <option value="Pulvérisateur lustrant déperlant" prix="5">Pulvérisateur lustrant déperlant</option>
+        <option value="Cire lustrante" prix="17">Cire lustrante</option>
+      </select>
+
+      <label for="quantite">Quantité:</label>
+      <input type="number" id="quantite" name="quantite"><br>
+    </div>
+
+    <div id="serviceOptions">
+      <label for="service">Prestation:</label>
+      <select id="service">
+        <option value="Lavage extérieur" prix="69">Lavage extérieur</option>
+        <option value="Lavage intérieur" prix="59">Lavage intérieur</option>
+        <option value="Lavage extérieur et intérieur"  prix="109">Lavage extérieur et intérieur</option>
+        <option value="Traitement céramique"  prix="39">Lavage extérieur et intérieur</option>
+        <option value="Lustrage intégral" prix="49">Lustrage intégral</option>
+      </select>
+    </div>
+
+    <button type="button" onclick="generateProforma()">Établir le devis</button>
+  </form>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.js"></script>
+  <script>
+    function showOptions() {
+      var productOptions = document.getElementById('productOptions');
+      var serviceOptions = document.getElementById('serviceOptions');
+      var productOrService = document.getElementById('productOrService').value;
+
+      if (productOrService === 'product') {
+        productOptions.style.display = 'block';
+        serviceOptions.style.display = 'none';
+      } else {
+        productOptions.style.display = 'none';
+        serviceOptions.style.display = 'block';
+      }
+    }
+
+    function generateProforma() {
+      var firstName = document.getElementById('firstName').value;
+      var lastName = document.getElementById('lastName').value;
+      var address = document.getElementById('address').value;
+      var phone = document.getElementById('phone').value;
+      var email = document.getElementById('email').value;
+      var productOrService = document.getElementById('productOrService').value;
+
+      var selectedOption;
+      var prix;
+
+      if (productOrService === 'product') {
+        selectedOption = document.getElementById('product').value;
+        prix_presta = parseFloat(document.getElementById('product').selectedOptions[0].getAttribute('prix'));
+        var quantity = document.getElementById('quantite').value;
+      } else {
+        selectedOption = document.getElementById('service').value;
+        prix_presta = getSelectedServicePrice(selectedOption);
+      }
+
+      var quantite = quantity || 1;
+      var coutTotal = quantite * prix;
+      var TVA = coutTotal * 0.2;
+      var TTC = coutTotal + TVA;
+
+      
+      var content = `
+        <h2>SS Wash Auto Devis</h2>
+        <p><strong>Adresse:</strong> Henry Becquerelle, imm Patio Jarry 97122</p>
+        <p><strong>Téléphone:</strong> 0690 80 23 79</p>
+        <p><strong>E-mail:</strong> info@sswashauto.com</p>
+        <p><strong>${productOrService === 'product' ? 'Produit' : 'Prestation'}:</strong> ${selectedOption}</p>
+        ${productOrService === 'product' ? `<p><strong>Quantité:</strong> ${quantite}</p>` : ''}
+        <p><strong>Cout total:</strong> ${coutTotal.toFixed(2)} €</p>
+        <p><strong>TVA (20%):</strong> ${TVA.toFixed(2)} €</p>
+        <p><strong>TTC:</strong> ${TTC.toFixed(2)} €</p>
+      `;
+
+      var newWindow = window.open();
+      newWindow.document.write(content);
+
+      var element = document.createElement('div');
+      element.innerHTML = content;
+      html2pdf(element, {
+        margin: 10,
+        filename: 'ss_wash_auto_devis.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      });
+    }
+
+  </script>
+
+</body>
+
+</html>
+
